@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мой Гараж</title>
+</head>
+<body>
+    <h1>Мой Гараж 🏍️</h1>
+
+   <a href="{% url 'add_moto' %}">+ Добавить мотоцикл</a>
+    <hr>
+
+    {% if motorcycles %}
+        <ul>
+            {% for moto in motorcycles %}
+                <li>
+                    <a href="{% url 'moto_detail' moto.pk %}">
+                    <strong>{{ moto.brand }} {{ moto.model }}</strong> ({{ moto.year }})
+                    <br>
+                    <small>VIN: {{ moto.vin }}</small>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Гараж пуст. Добавьте свой первый байк!</p>
+    {% endif %}
+
+</body>
+</html>

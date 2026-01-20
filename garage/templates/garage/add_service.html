@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Добавить запись</title>
+</head>
+<body>
+    <h2>Новая запись для {{moto.brand}} {{moto.model }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Сохранить</button>
+    </form>
+
+    <br>
+    <a href="{% url 'moto_detail' moto.pk %}">Отмена</a>
+</body>
+</html>

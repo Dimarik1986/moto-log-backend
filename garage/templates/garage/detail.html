@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ moto.brand }} {{ moto.model }}</title>
+</head>
+<body>
+    <a href="{% url 'moto_list' %}">← Назад в гараж</a>
+
+    <h1>{{ moto.brand }} {{ moto.model }} ({{ moto.year }})</h1>
+    <p>VIN: {{ moto.vin|default:"Не указан" }}</p>
+
+    <hr>
+    <h3>История обслуживания 🔧</h3>
+
+    <a href="{% url 'add_service' moto.pk %}">
+    <button>+ Добавить запись</button>
+</a>
+<br><br>
+
+    {% if services %}
+        <table border="1" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Что делали</th>
+                    <th>Пробег</th>
+                    <th>Цена</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                <tr>
+                    <td>{{ service.date }}</td>
+                    <td>
+                        <strong>{{ service.title }}</strong><br>
+                        <small>{{ service.notes }}</small>
+                    </td>
+                    <td>{{ service.mileage }} км</td>
+                    <td>{{ service.cost }} $</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Записей пока нет. Мотоцикл как новый (или просто никто не записывал 😅).</p>
+    {% endif %}
+
+</body>
+</html>
