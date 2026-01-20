@@ -5,7 +5,23 @@
 </head>
 <body>
     <h2>Новый мотоцикл</h2>
+{% if messages %}
+        <ul style="list-style: none; padding: 10px; background: #e0ffe0; border: 1px solid green;">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
+    <div style="background: #f4f4f4; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+        <h3>🚀 Автозаполнение</h3>
+        <form method="get">
+            <label>Введите VIN:</label>
+            <input type="text" name="vin_search_field" placeholder="17 символов..." style="width: 200px;">
+            <button type="submit" name="search_vin" value="1">Найти данные</button>
+        </form>
+        <small>Работает через NHTSA API (попробуй VIN от Harley или Ducati)</small>
+    </div>
     <form method="post">
         {% csrf_token %}
 
