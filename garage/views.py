@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect # <-- Добавили сюда
+from django.contrib import messages # Для красивых уведомлений
+from .utils import get_moto_data_by_vin # Наша функция
 
 from .forms import ServiceForm, MotorcycleForm
 from .models import Motorcycle
@@ -47,12 +49,35 @@ def add_service(request, pk):
 
 
 def add_motorcycle(request):
+    # Пустой словарь для данных формы
+    initial_data = {}
+
+    # 1. ПРОВЕРКА: Нажал ли юзер кнопку "Найти по VIN"?
+    # (Это GET-запрос, потому что мы просто запрашиваем данные, не сохраняя)
+    if 'search_vin' in request.GET:
+        vin = request.GET.get('vin_search_field')
+        found_data = get_moto_data_by_vin(vin)
+
+        if found_data:
+            # Если нашли - подставим данные в форму
+            initial_data = {
+                'vin': vin,
+                'brand': found_data['brand'],
+                'model': found_data['model'],
+                'year': found_data['year']
+            }
+            messages.success(request, f"Нашли байк: {found_data['brand']} {found_data['model']}")
+        else:
+            messages.error(request, "Ничего не найдено. Проверьте VIN.")
+
+    # 2. ОБРАБОТКА СОХРАНЕНИЯ (POST)
     if request.method == 'POST':
         form = MotorcycleForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('moto_list')  # После сохранения кидаем на главную
+            return redirect('moto_list')
     else:
-        form = MotorcycleForm()
+        # Если это просто открытие страницы ИЛИ мы вернулись с данными VIN
+        form = MotorcycleForm(initial=initial_data)
 
     return render(request, 'garage/add_moto.html', {'form': form})
